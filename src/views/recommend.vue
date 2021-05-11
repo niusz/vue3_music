@@ -7,7 +7,6 @@
             <slider v-if="sliders.length" :sliders="sliders"></slider>
           </div>
         </div>
-      </div>
       <div class="recommend-list">
         <h1 class="list-title">热门歌单推荐</h1>
         <ul>
@@ -18,7 +17,7 @@
             @click="selectItem(item)"
           >
             <div class="icon">
-              <img width="60" height="60" :src="item.pic">
+              <img width="60" height="60" v-lazy="item.pic">
             </div>
             <div class="text">
               <h2 class="name">
@@ -30,6 +29,7 @@
             </div>
           </li>
         </ul>
+      </div>
       </div>
     </scroll>
   </div>
