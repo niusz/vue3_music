@@ -5,6 +5,10 @@ import TopList from '@/views/top-list'
 import Search from '@/views/search'
 const routes = [
   {
+    path: '/',
+    redirect: '/recommend'
+  },
+  {
     path: '/recommend',
     component: Recommend
   },

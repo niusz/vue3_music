@@ -1,5 +1,5 @@
 <template>
-  <div class="topList"></div>
+  <div class="topList">排行页面</div>
 </template>
 
 <script>
