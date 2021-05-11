@@ -8,7 +8,7 @@ export default function useSlider(wrapperRef) {
   const slider = ref(null)
   const currenctPageIndex = ref(0)
   onMounted(() => {
-    const sliderVal = slider.value = new BScroll(wrapperRef.value, 
+    const sliderVal = slider.value = new BScroll(wrapperRef.value,
       {
         click: true,
         scrollX: true,
