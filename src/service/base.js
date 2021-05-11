@@ -14,6 +14,6 @@ export function get(url, params) {
       return serverData.result
     }
   }).catch((e) => {
-    console.log(e);
+    console.log(e)
   })
 }
