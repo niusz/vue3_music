@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" v-loading:[loadingText]="loading">
     <scroll class="recommend-content">
       <div>
         <div class="slider-wrapper">
@@ -8,13 +8,12 @@
           </div>
         </div>
       <div class="recommend-list">
-        <h1 class="list-title">热门歌单推荐</h1>
+        <h1 class="list-title" v-show="!loading">热门歌单推荐</h1>
         <ul>
           <li
             v-for="item in albums"
             class="item"
             :key="item.id"
-            @click="selectItem(item)"
           >
             <div class="icon">
               <img width="60" height="60" v-lazy="item.pic">
@@ -48,7 +47,13 @@ export default {
   data() {
     return {
       sliders: [],
-      albums: []
+      albums: [],
+      loadingText: '正在载入'
+    }
+  },
+  computed: {
+    loading() {
+      return !this.sliders.length && !this.albums.length
     }
   },
   async created() {
