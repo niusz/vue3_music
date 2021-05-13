@@ -7,6 +7,7 @@ export default function useFixed(props) {
   const scrollY = ref(0)
   const currentIndex = ref(0)
   const distance = ref(0)
+
   const fixedTitle = computed(() => {
     if (scrollY.value < 0) {
       return ''
@@ -24,7 +25,7 @@ export default function useFixed(props) {
   })
   watch(() => props.data, async () => {
     await nextTick()
-    caculate()
+    calculate()
   })
 
   watch(scrollY, (newY) => {
@@ -38,7 +39,8 @@ export default function useFixed(props) {
       }
     }
   })
-  function caculate() {
+
+  function calculate() {
     const list = groupRef.value.children
     const listHeightsVal = listHeights.value
     let height = 0
@@ -58,6 +60,7 @@ export default function useFixed(props) {
     groupRef,
     onScroll,
     fixedTitle,
-    fixedStyle
+    fixedStyle,
+    currentIndex
   }
 }
