@@ -2,8 +2,9 @@
   <ul class="song-list">
     <li
       class="item"
-      v-for="song in songs"
+      v-for="(song, index) in songs"
       :key="song.id"
+      @click="selectItem(song, index)"
     >
       <div class="content">
         <h2 class="name">{{song.name}}</h2>
@@ -24,61 +25,65 @@ export default {
       }
     }
   },
+  emits: ['select'],
   methods: {
     getDesc(song) {
-      return `${song.singer} ${song.album}`
+      return `${song.singer}·${song.album}`
+    },
+    selectItem(song, index) {
+      this.$emit('select', { song, index })
     }
   }
 }
 </script>
 
-<style>
-.song-list {
-    .item {
-      display: flex;
-      align-items: center;
-      box-sizing: border-box;
-      height: 64px;
-      font-size: $font-size-medium;
-      .rank {
-        flex: 0 0 25px;
-        width: 25px;
-        margin-right: 20px;
-        text-align: center;
-        .icon {
-          display: inline-block;
+<style lang="scss" scoped>
+  .song-list {
+      .item {
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        height: 64px;
+        font-size: $font-size-medium;
+        .rank {
+          flex: 0 0 25px;
           width: 25px;
-          height: 24px;
-          background-size: 25px 24px;
-          &.icon0 {
-            @include bg-image('first');
+          margin-right: 20px;
+          text-align: center;
+          .icon {
+            display: inline-block;
+            width: 25px;
+            height: 24px;
+            background-size: 25px 24px;
+            &.icon0 {
+              @include bg-image('first');
+            }
+            &.icon1 {
+              @include bg-image('second');
+            }
+            &.icon2 {
+              @include bg-image('third');
+            }
           }
-          &.icon1 {
-            @include bg-image('second');
-          }
-          &.icon2 {
-            @include bg-image('third');
+          .text {
+            color: $color-theme;
+            font-size: $font-size-large;
           }
         }
-        .text {
-          color: $color-theme;
-          font-size: $font-size-large;
-        }
-      }
-      .content {
-        flex: 1;
-        line-height: 20px;
-        overflow: hidden;
-        .name {
-          @include no-wrap();
-          color: $color-text
-        }
-        .desc {
-          @include no-wrap();
-          margin-top: 4px;
-          color: $color-text-d;
+        .content {
+          flex: 1;
+          line-height: 20px;
+          overflow: hidden;
+          .name {
+            @include no-wrap();
+            color: $color-text
+          }
+          .desc {
+            @include no-wrap();
+            margin-top: 4px;
+            color: $color-text-d;
+          }
         }
       }
     }
-  }
 </style>

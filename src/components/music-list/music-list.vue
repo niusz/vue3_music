@@ -1,39 +1,60 @@
 <template>
   <div class="music-list">
-    <div class="back"
-    @click="goBack">
+    <div
+      class="back"
+      @click="goBack"
+    >
       <i class="icon-back"></i>
     </div>
-  </div>
-  <h1 class="title">{{ title }}</h1>
-  <div
-    class="bg-image"
-    :style="bgImageStyle"
-    ref="bgImage">
+    <h1 class="title">{{ title }}</h1>
     <div
-      class="filter">
+      class="bg-image"
+      :style="bgImageStyle"
+      ref="bgImage"
+    >
+      <div
+        class="play-btn-wrapper"
+        :style="playBtnStyle"
+      >
+        <div
+          v-show="songs.length > 0"
+          class="play-btn"
+          @click="random"
+        >
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
+      <div
+        class="filter"
+        :style="filterStyle">
+      </div>
     </div>
     <scroll
       class="list"
       :style="scrollStyle"
       v-loading="loading"
+      v-no-result:[noResultText]="noResult"
       :probe-type="3"
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
         <song-list
-          :songs="songs">
+          :songs="songs"
+          @select="selectItem">
         </song-list>
       </div>
     </scroll>
-    </div>
+  </div>
 </template>
 
 <script >
 import SongList from '@/components/base/song-list/song-list'
 import Scroll from '@/components/base/scroll/scroll'
+import { mapActions } from 'vuex'
 
 const RESERVED_HEIGHT = 40
+
 export default {
   name: 'music-list',
   components: {
@@ -49,7 +70,11 @@ export default {
     },
     title: String,
     pic: String,
-    loading: Boolean
+    loading: Boolean,
+    noResultText: {
+      type: String,
+      default: '抱歉，没有找到可播放的歌曲'
+    }
   },
   data() {
     return {
@@ -59,21 +84,58 @@ export default {
     }
   },
   computed: {
+    noResult() {
+      return !this.loading && !this.songs.length
+    },
+    playBtnStyle() {
+      let display = ''
+      if (this.scrollY >= this.maxTranslateY) {
+        display = 'none'
+      }
+      return {
+        display
+      }
+    },
     bgImageStyle() {
       const scrollY = this.scrollY
       let zIndex = 0
+      let paddingTop = '70%'
+      let height = 0
+      let translateZ = 0
 
       if (scrollY > this.maxTranslateY) {
         zIndex = 10
+        paddingTop = 0
+        height = `${RESERVED_HEIGHT}px`
+        translateZ = 1
+      }
+
+      let scale = 1
+      if (scrollY < 0) {
+        scale = 1 + Math.abs(scrollY / this.imageHeight)
       }
       return {
         zIndex,
-        backgroundImage: `url(${this.pic})`
+        paddingTop,
+        height,
+        backgroundImage: `url(${this.pic})`,
+        tranform: `scale(${scale})translateZ(${translateZ}px)`
       }
     },
     scrollStyle() {
       return {
         top: `${this.imageHeight}px`
+      }
+    },
+    filterStyle() {
+      let blur = 0
+      const scrollY = this.scrollY
+      const imageHeight = this.imageHeight
+      if (scrollY >= 0) {
+        blur = Math.min(this.maxTranslateY / imageHeight, scrollY / imageHeight) * 20
+      }
+      return {
+        backdropFilter: `blur(${blur}px`
       }
     }
   },
@@ -87,13 +149,26 @@ export default {
     },
     onScroll(pos) {
       this.scrollY = -pos.y
-    }
+    },
+    selectItem({ song, index }) {
+      this.selectPlay({
+        list: this.songs,
+        index
+      })
+    },
+    random() {
+      this.randomPlay(this.songs)
+    },
+    ...mapActions([
+      'selectPlay',
+      'randomPlay'
+    ])
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .music-list {
+.music-list {
     position: relative;
     height: 100%;
     .back {
